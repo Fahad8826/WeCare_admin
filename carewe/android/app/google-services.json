@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "913414374707",
+    "project_id": "attandanceapp-5c633",
+    "storage_bucket": "attandanceapp-5c633.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913414374707:android:0b75a63428726a7591ea46",
+        "android_client_info": {
+          "package_name": "com.example.carewe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPLaLohUVjTGfyMTEIYY2hiwg4IiGcI8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913414374707:android:fe5445beced4e5e691ea46",
+        "android_client_info": {
+          "package_name": "com.example.number_trivia_tdd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPLaLohUVjTGfyMTEIYY2hiwg4IiGcI8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
