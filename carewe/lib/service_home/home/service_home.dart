@@ -325,37 +325,47 @@
 // }
 
 import 'dart:developer';
+import 'package:carewe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:carewe/service_home/chat/view/chat_screen.dart';
 import 'package:carewe/service_home/home/widget/details.dart';
-
 import 'controller/servce_controller.dart';
 
-// Constants for consistent styling
+// Enhanced App Theme
 class AppTheme {
-  static const Color primaryColor = Color(0xFF1976D2);
-  static const Color secondaryColor = Color(0xFF03A9F4);
-  static const Color accentColor = Color(0xFF0D47A1);
-  static const Color textPrimaryColor = Color(0xFF212121);
-  static const Color textSecondaryColor = Color(0xFF757575);
-  static const Color backgroundColor = Color(0xFFF5F5F5);
-  static const Color cardColor = Colors.white;
+  // Primary colors
+  static const Color primaryColor = Color(0xFF6A3EA1); // Purple
+  static const Color secondaryColor = Color(0xFF3A3A5A); // Dark blue-gray
+  static const Color accentColor = Color(0xFFEE6C4D); // Coral accent
 
-  static const double borderRadius = 15.0;
+  // Text colors
+  static const Color textPrimaryColor = Color(0xFF2D2D3A);
+  static const Color textSecondaryColor = Color(0xFF6C6C80);
+
+  // Background colors
+  static const Color backgroundColor = Color(0xFFF8F8FC);
+  static const Color cardColor = Colors.white;
+  static const Color cardHeaderColor = Color(0xFFF1EBFA); // Light purple
+
+  // Status colors
+  static const Color successColor = Color(0xFF3DD598);
+  static const Color warningColor = Color(0xFFFFD166);
+
+  // Design constants
+  static const double borderRadius = 16.0;
   static const double elementSpacing = 16.0;
-  static const double cardElevation = 4.0;
+  static const double cardElevation = 2.0;
 
   static BoxShadow defaultShadow = BoxShadow(
-    color: Colors.black.withOpacity(0.1),
-    spreadRadius: 1,
-    blurRadius: 5,
-    offset: Offset(0, 2),
+    color: Colors.black.withOpacity(0.08),
+    spreadRadius: 0,
+    blurRadius: 10,
+    offset: Offset(0, 4),
   );
 
   static TextStyle titleStyle = TextStyle(
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
@@ -363,6 +373,30 @@ class AppTheme {
   static TextStyle subtitleStyle = TextStyle(
     fontSize: 14,
     color: Colors.white.withOpacity(0.9),
+  );
+
+  static TextStyle cardTitleStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  static TextStyle sectionTitleStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: textPrimaryColor,
+  );
+
+  static TextStyle labelStyle = TextStyle(
+    fontSize: 13,
+    color: textSecondaryColor,
+    fontWeight: FontWeight.w500,
+  );
+
+  static TextStyle valueStyle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: textPrimaryColor,
   );
 }
 
@@ -396,47 +430,224 @@ class _HomePageState extends State<ServiceHomePage>
       length: 2,
       child: Scaffold(
         backgroundColor: AppTheme.backgroundColor,
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Get.back(),
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                expandedHeight: 180.0,
+                floating: false,
+                pinned: true,
+                elevation: 0,
+                automaticallyImplyLeading: false,
+                backgroundColor: AppTheme.primaryColor,
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                      onPressed: () {
+                        // Show a confirmation dialog
+                        _showLogoutDialog(context);
+                      },
+                      icon: Icon(Icons.logout_outlined),
+                    ),
+                  ),
+                ],
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppTheme.primaryColor,
+                          Color(0xFF4A2980),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        // Background Decoration
+                        Positioned(
+                          right: -50,
+                          top: -20,
+                          child: Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.1),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: -30,
+                          bottom: 0,
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.1),
+                            ),
+                          ),
+                        ),
+                        // Content
+                        SafeArea(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 16),
+                                Text(
+                                  'Service Dashboard',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Welcome back, Caregiver',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.9),
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(60),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      labelColor: AppTheme.primaryColor,
+                      unselectedLabelColor: AppTheme.textSecondaryColor,
+                      indicatorColor: AppTheme.primaryColor,
+                      indicatorWeight: 3,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Tab(
+                          icon: Icon(Icons.assignment),
+                          text: 'Duties',
+                        ),
+                        Tab(
+                          icon: Icon(Icons.chat),
+                          text: 'Messages',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: Container(
+            color: Colors.white,
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                ServiceDutyDetailsTab(),
+                ServiceChat(),
+              ],
             ),
           ),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              const Color.fromARGB(255, 87, 25, 117),
-              const Color.fromARGB(235, 0, 0, 0)
-            ])),
-          ),
-          title: Text(
-            'Service Dashboard',
-            style: AppTheme.titleStyle,
-          ),
-          bottom: TabBar(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white.withOpacity(0.7),
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
-            tabs: [
-              Tab(
-                icon: Icon(Icons.assignment),
-                text: 'Duties',
-              ),
-              Tab(
-                icon: Icon(Icons.chat),
-                text: 'Messages',
-              ),
-            ],
-          ),
         ),
-        body: TabBarView(
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Login()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Logout'))
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to handle logout
+  void _logoutUser() {}
+
+  Widget _buildStatusCard(
+      String label, String count, IconData icon, Color color) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
           children: [
-            ServiceDutyDetailsTab(),
-            ServiceChat(),
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+            ),
+            SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  count,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -453,25 +664,10 @@ class ServiceDutyDetailsTab extends StatelessWidget {
     return GetBuilder<ServceController>(
       builder: (controller) {
         return controller.dutyList.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.assignment_outlined,
-                      size: 64,
-                      color: AppTheme.primaryColor.withOpacity(0.5),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'No duties assigned yet',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: AppTheme.textSecondaryColor,
-                      ),
-                    ),
-                  ],
-                ),
+            ? _buildEmptyState(
+                Icons.assignment_outlined,
+                'No duties assigned yet',
+                'Check back later for new assignments',
               )
             : ListView.builder(
                 padding: EdgeInsets.all(AppTheme.elementSpacing),
@@ -483,9 +679,11 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(DetailsPage(
-                          data: controller.dutyList[index],
-                        ));
+                        Get.to(
+                          DetailsPage(data: controller.dutyList[index]),
+                          transition: Transition.rightToLeft,
+                          duration: Duration(milliseconds: 300),
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -500,8 +698,8 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color.fromARGB(255, 87, 25, 117),
-                                    Colors.black
+                                    AppTheme.primaryColor,
+                                    Color(0xFF4A2980),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -514,14 +712,22 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                                 ),
                               ),
                               padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
+                                  vertical: 16, horizontal: 20),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    _getServiceIcon(service),
-                                    color: Colors.white,
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      _getServiceIcon(service),
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
                                   ),
-                                  SizedBox(width: 8),
+                                  SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
                                       service,
@@ -532,11 +738,27 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      'Active',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(20.0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -552,7 +774,7 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                                           controller.dutyList[index]['name'] ??
                                               'N/A',
                                         ),
-                                        SizedBox(height: 8),
+                                        SizedBox(height: 12),
                                         _buildInfoRow(
                                           Icons.person_outline,
                                           'Care Recipient',
@@ -560,19 +782,28 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                                                   ['name'] ??
                                               'N/A',
                                         ),
-                                        SizedBox(height: 8),
-                                        _buildInfoRow(
-                                          Icons.calendar_today,
-                                          'Date',
-                                          controller.dutyList[index]['date'] ??
-                                              'N/A',
-                                        ),
-                                        SizedBox(height: 8),
-                                        _buildInfoRow(
-                                          Icons.access_time,
-                                          'Time',
-                                          controller.dutyList[index]['time'] ??
-                                              'N/A',
+                                        SizedBox(height: 12),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: _buildInfoRow(
+                                                Icons.calendar_today,
+                                                'Date',
+                                                controller.dutyList[index]
+                                                        ['date'] ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: _buildInfoRow(
+                                                Icons.access_time,
+                                                'Time',
+                                                controller.dutyList[index]
+                                                        ['time'] ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -580,26 +811,75 @@ class ServiceDutyDetailsTab extends StatelessWidget {
                                   Expanded(
                                     flex: 3,
                                     child: Container(
-                                      height: 100,
+                                      height: 110,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
+                                        borderRadius: BorderRadius.circular(10),
                                         boxShadow: [
                                           BoxShadow(
                                             color:
                                                 Colors.black.withOpacity(0.1),
-                                            blurRadius: 4,
-                                            spreadRadius: 1,
+                                            blurRadius: 6,
+                                            spreadRadius: 0,
+                                            offset: Offset(0, 2),
                                           ),
                                         ],
                                       ),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          _getServiceImageUrl(service),
-                                          fit: BoxFit.cover,
+                                        child: Stack(
+                                          children: [
+                                            Positioned.fill(
+                                              child: Image.network(
+                                                _getServiceImageUrl(service),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              left: 0,
+                                              right: 0,
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 4),
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                child: Icon(
+                                                  Icons.more_horiz,
+                                                  color: Colors.white,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: Colors.grey.withOpacity(0.1)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'View Details',
+                                    style: TextStyle(
+                                      color: AppTheme.primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 14,
+                                    color: AppTheme.primaryColor,
                                   ),
                                 ],
                               ),
@@ -619,12 +899,19 @@ class ServiceDutyDetailsTab extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          size: 18,
-          color: AppTheme.primaryColor,
+        Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(
+            icon,
+            size: 16,
+            color: AppTheme.primaryColor,
+          ),
         ),
-        SizedBox(width: 8),
+        SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -632,14 +919,16 @@ class ServiceDutyDetailsTab extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
                   color: AppTheme.textSecondaryColor,
                 ),
               ),
+              SizedBox(height: 2),
               Text(
                 value,
                 style: TextStyle(
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   color: AppTheme.textPrimaryColor,
                 ),
               ),
@@ -647,6 +936,50 @@ class ServiceDutyDetailsTab extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildEmptyState(IconData icon, String title, String subtitle) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 64,
+                color: AppTheme.primaryColor,
+              ),
+            ),
+            SizedBox(height: 24),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 16,
+                color: AppTheme.textSecondaryColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -703,115 +1036,232 @@ class ServiceChat extends StatelessWidget {
     final servC = Get.put(ServceController());
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: Colors.white,
       body: GetBuilder<ServceController>(
         initState: (state) {
           servC.fetchChat();
         },
         builder: (controller) {
           return controller.dutyChat.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.chat_bubble_outline,
-                        size: 64,
-                        color: AppTheme.primaryColor.withOpacity(0.5),
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'No messages yet',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppTheme.textSecondaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
+              ? _buildEmptyState(
+                  Icons.chat_bubble_outline,
+                  'No messages yet',
+                  'When you receive messages, they will appear here',
                 )
-              : ListView.builder(
-                  padding: EdgeInsets.all(AppTheme.elementSpacing),
-                  itemCount: controller.dutyChat.length,
-                  itemBuilder: (context, index) {
-                    final email = controller.emailString[index];
-                    final latestMessage =
-                        (controller.dutyChat.values.toList()[index] as List)
-                            .last;
-                    final messageText = latestMessage['message'] ?? '';
-                    final messageTime = latestMessage['time'] ?? '';
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(16),
+                        itemCount: controller.dutyChat.length,
+                        itemBuilder: (context, index) {
+                          final email = controller.emailString[index];
+                          final latestMessage = (controller.dutyChat.values
+                                  .toList()[index] as List)
+                              .last;
+                          final messageText = latestMessage['message'] ?? '';
+                          final messageTime = latestMessage['time'] ?? '';
 
-                    String formattedTime = '';
-                    if (messageTime.toString().length > 11) {
-                      formattedTime = messageTime.toString().substring(11, 19);
-                    }
+                          String formattedTime = '';
+                          if (messageTime.toString().length > 11) {
+                            formattedTime =
+                                messageTime.toString().substring(11, 19);
+                          }
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.to(ChatScreen(
-                            email: controller.dutyChat.keys.toList()[index],
-                            id: 'rahul@456',
-                          ));
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.borderRadius),
-                            color: AppTheme.cardColor,
-                            boxShadow: [AppTheme.defaultShadow],
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.all(12),
-                            leading: CircleAvatar(
-                              radius: 24,
-                              backgroundColor:
-                                  AppTheme.primaryColor.withOpacity(0.2),
-                              backgroundImage: NetworkImage(
-                                'https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg',
-                              ),
-                            ),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    email,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppTheme.textPrimaryColor,
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                  ChatScreen(
+                                    email: controller.dutyChat.keys
+                                        .toList()[index],
+                                    id: 'rahul@456',
+                                  ),
+                                  transition: Transition.rightToLeft,
+                                  duration: Duration(milliseconds: 300),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.08),
+                                      blurRadius: 8,
+                                      spreadRadius: 0,
+                                      offset: Offset(0, 2),
                                     ),
-                                    overflow: TextOverflow.ellipsis,
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    children: [
+                                      Stack(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 28,
+                                            backgroundColor: AppTheme
+                                                .primaryColor
+                                                .withOpacity(0.1),
+                                            backgroundImage: NetworkImage(
+                                              'https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg',
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: 0,
+                                            bottom: 0,
+                                            child: Container(
+                                              height: 16,
+                                              width: 16,
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.successColor,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 2,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    email,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                      color: AppTheme
+                                                          .textPrimaryColor,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 8),
+                                                  child: Text(
+                                                    formattedTime,
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: AppTheme
+                                                          .textSecondaryColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 6),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    messageText,
+                                                    style: TextStyle(
+                                                      color: AppTheme
+                                                          .textSecondaryColor,
+                                                      fontSize: 14,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 8),
+                                                Container(
+                                                  padding: EdgeInsets.all(6),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        AppTheme.primaryColor,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Text(
+                                                    "1",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 11,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  formattedTime,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppTheme.textSecondaryColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                messageText,
-                                style: TextStyle(
-                                  color: AppTheme.textSecondaryColor,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 );
         },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(IconData icon, String title, String subtitle) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 64,
+                color: AppTheme.primaryColor,
+              ),
+            ),
+            SizedBox(height: 24),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 16,
+                color: AppTheme.textSecondaryColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
